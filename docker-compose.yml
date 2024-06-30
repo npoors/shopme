@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: my-postgres14-image:latest
+    container_name: shopmeecommerce-postgres
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_PASSWORD: password
+    volumes:
+      - postgres_data_volume:/var/lib/postgresql/data
+
+volumes:
+  postgres_data_volume:

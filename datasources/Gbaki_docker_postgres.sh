@@ -28,8 +28,9 @@ docker stop 0fcf4943b27d
 docker rm 0fcf4943b27d
 docker ps
 docker volume create --driver local --opt type=none --opt device=D:/DEV/java/projects/volumes/postgres_data_volume --opt o=bind postgres_data_volume
-docker run --name my-postgres-container -e POSTGRES_PASSWORD=password -d -p 5433:5432 176399451347
-docker run --name my-postgres-container -e POSTGRES_PASSWORD=password -d -p 5433:5432 -v postgres_data_volume:/var/lib/postgresql/data 176399451347
+docker volume create --driver local --opt type=none --opt device=D:/DEV/java/projects/volumes/postgres_data_volume --opt o=bind shopmeecommerce_postgres_data_volume
+docker run --name my-postgres-container -e POSTGRES_PASSWORD=password -d -p 5433:5432 b212022e7c2a
+docker run --name my-postgres-container -e POSTGRES_PASSWORD=password -d -p 5433:5432 -v postgres_data_volume:/var/lib/postgresql/data b212022e7c2a
 docker exec -it my-postgres-container bash
 
 docker exec my-postgres-container psql -U postgres -c "SELECT version();"
@@ -58,5 +59,41 @@ docker cp insert_students.sql my-postgres-container:/select_students.sql
 docker exec my-postgres-container psql -U postgres -d postgres -f select_students.sql
 
 docker run --rm --volumes-from my-postgres-container -v D:/backup ubuntu tar cvf /backup/backup.tar /postgres_data_volume
+tar xvf D:/backup/backup.tar -C /backup //pour decompresser
 docker run --rm --volumes-from my-postgres-container -v D:/backup:/backup ubuntu tar -czvf /backup/backup.tar.gz /var/lib/postgresql/data
 docker run --rm --volumes-from my-postgres-container -v D:/backup:/backup busybox tar -czvf /backup/backup.tar.gz /var/lib/postgresql/data
+docker run --rm -v postgres_data_volume:/var/lib/postgresql/data -v D:/backup:/backup busybox tar -czvf /backup/backup.tar.gz /var/lib/postgresql/data
+
+Étape 1 : Créer un nouveau volume Docker
+Créez un nouveau volume Docker nommé postgres_data_volume :
+docker volume create postgres_data_volume
+
+Étape 2 : Restaurer les données à partir de la sauvegarde dans le nouveau volume
+docker run --rm -v postgres_data_volume:/var/lib/postgresql/data -v D:/backup:/backup busybox tar -xzvf /backup/backup.tar.gz -C /var/lib/postgresql/data
+
+
+docker run --rm --volumes-from my-postgres-container2 -v D:/backup:/backup ubuntu bash -c "cd /var/lib/postgresql/data && tar xzvf /backup/backup.tar.gz
+tar -xzvf D:/backup/backup.tar.gz -C D:/backup
+
+docker run --rm -v postgres_data_volume:/var/lib/postgresql/data -v D:/backup:/backup busybox tar -xzvf /backup/backup_postgres.tar.gz -C /
+docker run --rm -v shopmeecommerce_postgres_data_volume:/var/lib/postgresql/data -v D:/backup:/backup busybox tar -xzvf /backup/backup_postgres.tar.gz -C /
+docker run --rm -v postgres_data_volume:/var/lib/postgresql/data -v D:/backup:/backup busybox tar -xzvf /backup/backup_ubuntu.tar.gz -C /var/lib/postgresql/data
+
+docker run --rm -v postgres_data_volume:/var/lib/postgresql/data -v D:/backup:/backup busybox sh -c "cd /var/lib/postgresql/data && tar -xzvf /backup/backup_ubuntu.tar.gz -C /"
+docker run --rm -v postgres_data_volume:/var/lib/postgresql/data -v D:/backup:/backup busybox sh -c "cd /var/lib/postgresql/data && tar -xzvf /backup/backup_ubuntu.tar.gz -C /var/lib/postgresql/data"
+
+
+
+
+Supprimer tous les volumes inutilisés :
+docker volume prune -f
+
+Supprimer les images inutilisées :
+docker image prune -a
+
+
+
+Construire une image Docker à partir de ce Dockerfile
+docker build -t mon-postgres-image .
+
+docker run --name my-postgres-container -d b212022e7c2a
