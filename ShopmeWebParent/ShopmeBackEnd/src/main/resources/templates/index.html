@@ -1,13 +1,16 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">	
     <meta name="description" content="Description de votre page web">
     <meta name="keywords" content="HTML, CSS, JavaScript">
     <meta name="author" content="Votre Nom">
-    <title>Shopme Admin Control Panel</title>
-    <style>
+    <title>Shopme Admin Controlle Panel</title>
+	<link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+	<script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+	<script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+	<style>
         /* Feuille de style CSS interne */
         body {
             font-family: Arial, sans-serif;
@@ -55,37 +58,42 @@
     </style>
 </head>
 <body>
+	<div class="container-fluid">
+		<!-- Navbar -->
+	    <div class="navbar navbar-expand">
+	        <img th:src="@{/images/ShopmeAdminSmall.png}" alt="Logo">
+	    </div>
+		<header>
+		        <h1> Welcome to Shopme Admin Control Panel</h1>
+		    </header>
 
-    <header>
-        <h1> Welcome to Shopme Admin Control Panel</h1>
-    </header>
+		    <nav>
+		        <a href="#home">Accueil</a>
+		        <a href="#about">À propos</a>
+		        <a href="#contact">Contact</a>
+		    </nav>
 
-    <nav>
-        <a href="#home">Accueil</a>
-        <a href="#about">À propos</a>
-        <a href="#contact">Contact</a>
-    </nav>
+		    <main>
+		        <section id="home">
+		            <h2>Accueil</h2>
+		            <p>Ceci est la section d'accueil.</p>
+		        </section>
 
-    <main>
-        <section id="home">
-            <h2>Accueil</h2>
-            <p>Ceci est la section d'accueil.</p>
-        </section>
+		        <section id="about">
+		            <h2>À propos</h2>
+		            <p>Informations à propos de nous.</p>
+		        </section>
 
-        <section id="about">
-            <h2>À propos</h2>
-            <p>Informations à propos de nous.</p>
-        </section>
+		        <section id="contact">
+		            <h2>Contact</h2>
+		            <p>Comment nous contacter.</p>
+		        </section>
+		    </main>
 
-        <section id="contact">
-            <h2>Contact</h2>
-            <p>Comment nous contacter.</p>
-        </section>
-    </main>
-
-    <footer>
-        <p>&copy; 2024 Votre Nom. Tous droits réservés.</p>
-    </footer>
+		    <footer>
+		        <p>&copy; 2024 Votre Nom. Tous droits réservés.</p>
+		    </footer>
+	</div>
 
 </body>
 </html>
