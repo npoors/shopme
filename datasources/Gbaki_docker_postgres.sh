@@ -27,8 +27,9 @@ docker ps
 docker stop 0fcf4943b27d
 docker rm 0fcf4943b27d
 docker ps
-docker volume create --driver local --opt type=none --opt device=D:/DEV/java/projects/volumes/postgres_data_volume --opt o=bind postgres_data_volume
+docker volume create --driver local --opt type=none --opt device=D:/DEV/java/projects/volumes/postgres_data_volume --opt o=bind pept_postgres_data_volume
 docker volume create --driver local --opt type=none --opt device=D:/DEV/java/projects/volumes/postgres_data_volume --opt o=bind shopmeecommerce_postgres_data_volume
+docker volume create --driver local --opt type=none --opt device=D:/DEV/java/projects/volumes/keycloak_data_volume --opt o=bind pept_keycloak_data_volume
 docker run --name my-postgres-container -e POSTGRES_PASSWORD=password -d -p 5433:5432 b212022e7c2a
 docker run --name my-postgres-container -e POSTGRES_PASSWORD=password -d -p 5433:5432 -v postgres_data_volume:/var/lib/postgresql/data b212022e7c2a
 docker exec -it my-postgres-container bash
@@ -97,3 +98,15 @@ Construire une image Docker à partir de ce Dockerfile
 docker build -t mon-postgres-image .
 
 docker run --name my-postgres-container -d b212022e7c2a
+
+pg_dump -U postgres -h 10.10.140.162 -p 6432 -F c -b -v -f D:\Backup\pept_postgres.backup pept
+pg_restore -U postgres -h localhost -p 5433 -d pept -v D:\Backup\pept_postgres.backup
+
+docker exec -it shopmeecommerce-postgres bash
+docker cp D:\backup\pept_postgres.backup shopmeecommerce-postgres:/var/lib/postgresql/data/backups/pept_postgres.backup
+
+docker exec -t shopmeecommerce-postgres pg_restore -U postgres -d pept -v /var/lib/postgresql/data/backups/pept_postgres.backup
+
+docker run --rm --volumes-from shopmeecommerce-postgres -v D:/backup:/backup busybox tar -czvf /backup/backup01072024.tar.gz /var/lib/postgresql/data
+
+docker run -p 8284:8080 -e KEYCLOAK_ADMIN=admin -e KEYCLOAK_ADMIN_PASSWORD=admin quay.io/keycloak/keycloak:23.0.0 start-dev
